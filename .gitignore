@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.log
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter / DataSpell
+.ipynb_checkpoints/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data & large artifacts
+data/raw/*
+!data/raw/.gitkeep
+
+data/processed/*
+!data/processed/.gitkeep
+
+figures/*
+!figures/.gitkeep
+
+notebooks/data/*
+!notebooks/data/.gitkeep
+
+notebooks/figures/*
+!notebooks/figures/.gitkeep
