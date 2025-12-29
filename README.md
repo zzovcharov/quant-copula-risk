@@ -40,7 +40,7 @@ The pipeline is designed to run **even without internet access** through synthet
 
 ---
 
-```markdown
+
 ## Project Structure
 
 ```text
