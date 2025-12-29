@@ -1,8 +1,26 @@
 # Copula-Based Portfolio Risk Modeling
-_A full pipeline for tail-risk analysis using Student-t marginals & Gaussian copula simulation_
+====================================
 
-This project implements an end-to-end quantitative risk modeling workflow for a **sector ETF portfolio** (`XLK`, `XLF`, `XLI`, `XLV`).  
-It estimates **Student-t marginal distributions**, fits a **Gaussian copula** to capture dependence, and computes **portfolio VaR & CVaR** using simulated returns.
+This project implements a complete workflow for **quantifying portfolio tail-risk** using
+**Student-t marginal distributions** and a **Gaussian copula dependence structure**.
+The goal is to move beyond simple correlation analysis and model **realistic joint behavior**
+of asset returns, especially in stressed markets where traditional assumptions break down.
+
+The pipeline takes price data for a small equity sector portfolio (XLK, XLF, XLI, XLV),
+fits heavy-tailed distributions to individual returns, and estimates cross-asset dependence
+through a Gaussian copula. Using Monte-Carlo simulation, it generates synthetic return paths
+that preserve both **fat-tailed marginal behavior** and **inter-asset correlations**, allowing
+robust estimation of **Value-at-Risk (VaR)** and **Conditional VaR (CVaR)**.
+
+All results – including fitted parameters, copula correlation matrix, and risk summaries –
+are saved under `data/processed/`, and visual outputs are saved to `figures/`.
+If external price data cannot be downloaded, the project supports a fully offline mode
+by generating **synthetic ETF price paths** that follow realistic geometric Brownian motion.
+
+This repository is designed as a **reusable modular package** (`quantcopula/`)
+that can serve as a practical template for academic coursework, quantitative research,
+or portfolio-risk prototyping.
+
 
 The pipeline is designed to run **even without internet access** through synthetic price data generation.
 
@@ -22,29 +40,32 @@ The pipeline is designed to run **even without internet access** through synthet
 
 ---
 
+```markdown
 ## Project Structure
 
+```text
 quant-copula-risk/
 ├─ data/
-│ ├─ raw/ # cached or synthetic prices (parquet)
-│ └─ processed/ # t-params, copula correlation, risk summary
+│  ├─ raw/          # cached or synthetic prices (parquet)
+│  └─ processed/    # t-params, copula correlation, risk summary
 │
 ├─ notebooks/
-│ ├─ data/
-│ └─ figures/
+│  ├─ data/
+│  └─ figures/
 │
 ├─ quantcopula/
-│ ├─ data.py
-│ ├─ margins.py
-│ ├─ copula.py
-│ ├─ plotting.py
-│ └─ risk.py
+│  ├─ __init__.py
+│  ├─ data.py
+│  ├─ margins.py
+│  ├─ copula.py
+│  ├─ plotting.py
+│  └─ risk.py
 │
 └─ scripts/
-├─ bootstrap_synthetic_data.py # generate synthetic prices (offline mode)
-└─ run_pipeline.py # main workflow
+   ├─ bootstrap_synthetic_data.py   # generate synthetic prices (offline mode)
+   └─ run_pipeline.py               # main workflow
 
-
+```
 ---
 
 ## Installation
@@ -89,55 +110,43 @@ historical   0.95 -0.008909 -0.011180
 
 ## Methodology Overview
 
-1. Data sourcing
+### 1. Data sourcing
+- Retrieve market prices (or generate synthetic data)
+- Persist dataset locally (`data/raw/`) as Parquet
 
-- Load from Yahoo or synthetic
+### 2. Marginal modeling
+- Compute daily log returns
+- Fit Student-t marginal distribution for each asset
+- Apply Probability Integral Transform (PIT) to produce Uniform(0,1) samples
 
-- Cache locally as parquet
-
-2. Marginal modeling
-
-- Convert prices → log returns
-
-- Fit Student-t distribution per asset
-
-- Probability Integral Transform (PIT) → returns → uniforms
-
-3. Dependence modeling
-
-- Transform uniforms → Gaussian space
-
+### 3. Dependence modeling
+- Transform uniforms to Gaussian space
 - Estimate empirical correlation matrix
+- Fit **Gaussian copula** to capture cross-asset dependence
+- Monte-Carlo simulate new samples from the copula
 
-- Fit **Gaussian copula**
+### 4. Inverse transformation
+- Map simulated uniforms back to the return space via the fitted Student-t CDF inverse
 
-- Simulate correlated samples
+### 5. Portfolio tail-risk
+- Construct equal-weight portfolio
+- Compute **VaR** and **CVaR** from simulated distributions
 
-4. Inverse transformation
 
-- Copula uniforms → simulated returns using t-inverse CDF
+## Example Outputs
 
-5. Portfolio risk
+### Correlation Heatmap
+<img src="figures/correlation_heatmap.png" width="500">
 
-- Equal-weight portfolio (default)
+### Portfolio Distribution with VaR & CVaR
+<img src="figures/portfolio_distribution.png" width="500">
 
-- Compute VaR and CVaR
+### Additional Figures
+- [prices.png](figures/prices.png)
+- [returns.png](figures/returns.png)
+- [ecdf_hist.png](figures/ecdf_hist.png)
+- [ecdf_copula.png](figures/ecdf_copula.png)
 
-## Example Plots
-
-Generated in figures/:
-
-- prices.png
-
-- returns.png
-
-- correlation_heatmap.png
-
-- portfolio_distribution.png
-
-- ecdf_hist.png
-
-- ecdf_copula.png
 
 ## Troubleshooting
 

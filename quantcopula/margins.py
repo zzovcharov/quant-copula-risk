@@ -150,7 +150,7 @@ def fit_t_marginals(returns: pd.DataFrame, save_path: str | None = None) -> pd.D
     params = fit_student_t_params(returns)
     params_df = params_to_frame(params)
     params_df.to_parquet(save_path, index=False)
-    print(f"✅ Saved t-parameters to {save_path}")
+    print(f"Saved t-parameters to {save_path}")
 
     U = to_uniforms(returns, params)
     return U

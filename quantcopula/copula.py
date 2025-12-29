@@ -100,7 +100,7 @@ def fit_gaussian_copula(U: pd.DataFrame) -> Dict[str, Any]:
     os.makedirs("data/processed", exist_ok=True)
     corr_df = pd.DataFrame(corr, index=U.columns, columns=U.columns)
     corr_df.to_parquet(os.path.join("data", "processed", "gaussian_copula_corr.parquet"))
-    print("✅ Fitted Gaussian copula and saved correlation matrix to data/processed/")
+    print("Fitted Gaussian copula and saved correlation matrix to data/processed/")
 
     return copula
 

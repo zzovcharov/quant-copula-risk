@@ -118,7 +118,7 @@ def get_prices(
     # Save cache
     os.makedirs(os.path.dirname(cache_path), exist_ok=True)
     prices.to_parquet(cache_path)
-    print(f"✅ Saved downloaded prices to {cache_path}")
+    print(f"Saved downloaded prices to {cache_path}")
 
     return prices
 
