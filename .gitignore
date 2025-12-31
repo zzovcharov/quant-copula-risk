@@ -27,7 +27,6 @@ data/raw/*
 data/processed/*
 !data/processed/.gitkeep
 
-figures/*
 !figures/.gitkeep
 
 notebooks/data/*
